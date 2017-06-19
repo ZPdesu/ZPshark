@@ -46,12 +46,10 @@ class SharkThread(QThread):
         self.filter_text = ''
         self.fname = fname
 
-
     def render(self, interface, filter_text):
         self.interface = interface
         self.filter_text = filter_text
         self.start()
-
 
     def run(self):
         # try:
@@ -80,25 +78,12 @@ class SharkThread(QThread):
                     self.pkt_list.append(pkt)
                     self.main_window.push_summary.emit(temp_list)
 
-
         self.main_window.change_status.emit('thread finished')
         # except Exception:
         #     self.main_window.label_2.setText('warning happened')
 
     def stop_thread(self):
         self.stop = True
-
-
-class MyThread(threading.Thread):
-    def __init__(self):
-        super().__init__()
-        self.tttt = True
-
-    def run(self):
-        while self.tttt:
-            time.sleep(4)
-            print(4)
-        print("exit")
 
 
 class UI(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -109,22 +94,6 @@ class UI(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
-        self.pkt_list = []
-        self.content_text_list = ''
-        self.hex_text_list = ''
-        self.tableWidget.cellClicked.connect(self.show_content)
-        self.tableWidget.cellClicked.connect(self.show_hex)
-        self.tableWidget.cellDoubleClicked.connect(self.show_content_widget)
-
-        self.pushButton.clicked.connect(self.start_thread)
-        self.thread = None
-        self.stopbutton = None
-        self.comboBox.currentTextChanged.connect(self.add_stopbutton)
-        self.statusBar.showMessage('ready')
-        self.push_summary.connect(self.push_entry)
-        self.change_status.connect(self.change_statusbar)
-        self.hide_filter.connect(self.hide_filterbutton)
         self.initUI()
 
     def add_stopbutton(self, text):
@@ -152,7 +121,6 @@ class UI(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableWidget.setItem(row, 5, QtWidgets.QTableWidgetItem(item_list[5]))
         self.tableWidget.setItem(row, 6, QtWidgets.QTableWidgetItem(item_list[6]))
 
-
     def hide_filterbutton(self, flag):
         if flag == True:
             self.pushButton.hide()
@@ -163,6 +131,21 @@ class UI(QtWidgets.QMainWindow, Ui_MainWindow):
         self.statusBar.showMessage(string)
 
     def initUI(self):
+        self.setupUi(self)
+        self.pkt_list = []
+        self.content_text_list = ''
+        self.hex_text_list = ''
+        self.tableWidget.cellClicked.connect(self.show_content)
+        self.tableWidget.cellClicked.connect(self.show_hex)
+        self.tableWidget.cellDoubleClicked.connect(self.show_content_widget)
+        self.pushButton.clicked.connect(self.start_thread)
+        self.thread = None
+        self.stopbutton = None
+        self.comboBox.currentTextChanged.connect(self.add_stopbutton)
+        self.statusBar.showMessage('ready')
+        self.push_summary.connect(self.push_entry)
+        self.change_status.connect(self.change_statusbar)
+        self.hide_filter.connect(self.hide_filterbutton)
 
         self.fname = 'mycapture.pcap'
         openFile = QAction(QIcon('folder.ico'), 'Open', self)
@@ -249,7 +232,6 @@ class UI(QtWidgets.QMainWindow, Ui_MainWindow):
             result += '\n'
         return result
 
-
     def hex_content(self, pkt):
 
         tmp_list = pkt.eth.dst.split(':')
@@ -268,7 +250,6 @@ class UI(QtWidgets.QMainWindow, Ui_MainWindow):
         for i in range(len(tmp_list)):
             tmp_list[i]=tmp_list[i].upper()
         return tmp_list
-
 
     def keyPressEvent(self, e):
 
@@ -290,7 +271,7 @@ def print_character(hex_list):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = UI()
-
     sys.exit(app.exec_())
+
 
 
